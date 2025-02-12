@@ -19,15 +19,15 @@ months = [
 def main():
 
     while True:
-        date_string = input("Date: ")
+        date_string = input("Date: ").strip()
 
         date_components = re.split(r"[\/,\-\s]+", date_string)
 
-        to_print = check_date_and_return(date_components)
-        if not to_print == False:
+        date_tuple = check_date_and_return(date_components)
+        if date_tuple:
             break
 
-    print(f"{to_print[0]}-{to_print[1]:02}-{to_print[2]:02}")
+    print(f"{date_tuple[0]}-{date_tuple[1]:02}-{date_tuple[2]:02}")
 
 
 def check_date_and_return(date_components):
@@ -35,34 +35,22 @@ def check_date_and_return(date_components):
 
     try:
         month, day, year = date_components
-    except ValueError:
-        return False
 
-    try:
         year = int(year)
-        if year < 0:
-            raise ValueError
-    except ValueError:
-        return False
 
-    month = month.title()
-
-    if month in months:
-        month = months.index(month) + 1
-    else:
-        try:
+        if month.title() in months:
+            month = months.index(month.title()) + 1
+        else:
             month = int(month)
             if month < 1 or month > 12:
                 raise ValueError
-        except ValueError:
-            return False
 
-    try:
         day = int(day)
-        if day < 0 or day > 31:
+        if day < 1 or day > 31:
             raise ValueError
+
     except ValueError:
-        return False
+        return None
 
     return year, month, day
 
